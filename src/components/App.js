@@ -4,6 +4,8 @@ import youtube from '../apis/youtube'
 import VideoList from './VideoList'
 import VideoDetail from './VideoDetail'
 
+const KEY = 'AIzaSyBqDtfC4xSK2pqf55zg54aSvG0fWaLwlws'
+
 export default class App extends Component {
     state = { videos: [], selectedVideo: null }
 
@@ -14,8 +16,12 @@ export default class App extends Component {
     onTermSubmit = async (term) => {
         const response = await youtube.get('/search', {
             params: {
-                q: term
-            }
+                q: term,
+                part: 'snippet',
+                maxResults: 5,
+                type: 'video',
+                key: KEY,
+            },
         })
 
         // response.data.items is array
