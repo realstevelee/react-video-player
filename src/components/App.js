@@ -20,7 +20,7 @@ export default class App extends Component {
                 part: 'snippet',
                 maxResults: 5,
                 type: 'video',
-                key: KEY,
+                key: KEY
             },
         })
 
