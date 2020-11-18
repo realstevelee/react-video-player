@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { usetState, useEffect } from 'react'
 import SearchBar from './SearchBar'
 import youtube from '../apis/youtube'
 import VideoList from './VideoList'
@@ -6,14 +6,15 @@ import VideoDetail from './VideoDetail'
 
 const KEY = 'AIzaSyBqDtfC4xSK2pqf55zg54aSvG0fWaLwlws'
 
-export default class App extends Component {
-    state = { videos: [], selectedVideo: null }
+const App = () => {
+    const [video, setVideo] = useState([])
+    const [selectedVideo, setSelectedVideo] = useState(null)
 
-    componentDidMount() {
+    useEffect(() => {
         this.onTermSubmit('korea')
-    }
+    }, [])
 
-    onTermSubmit = async (term) => {
+    const onTermSubmit = async (term) => {
         const response = await youtube.get('/search', {
             params: {
                 q: term,
@@ -24,33 +25,28 @@ export default class App extends Component {
             },
         })
 
-        // response.data.items is array
-        this.setState({
-            videos: response.data.items,
-            selectedVideo: response.data.items[0]
-        })
+        setVideos(response.data.items)
+        setSelectedVideo(reponse.data.items[0])
     }
 
-    onVideoSelect = (video) => {
-        this.setState({ selectedVideo: video })
-    }
-
-    render() {
-        return (
-            <div className="ui container">
-                <SearchBar onFormSubmit={this.onTermSubmit} />
-                <div className="ui grid">
-                    <div className="ui row">
-                        <div className="eleven wide column">
-                            <VideoDetail video={this.state.selectedVideo} />
-                        </div>
-                        <div className="five wide column">
-                            {/* Passing state as props*/}
-                            <VideoList onVideoSelect={this.onVideoSelect} videos={this.state.videos} />
-                        </div>
+    return (
+        <div className="ui container">
+            <SearchBar onFormSubmit={onTermSubmit} />
+            <div className="ui grid">
+                <div className="ui row">
+                    <div className="eleven wide column">
+                        <VideoDetail video={selectedVideo} />
+                    </div>
+                    <div className="five wide column">
+                        {/* Passing state as props*/}
+                        <VideoList
+                            onVideoSelect={(video) => setSelectedVideo(video)}
+                            videos={videos} />
                     </div>
                 </div>
             </div>
-        )
-    }
+        </div>
+    )
 }
+
+export default App
